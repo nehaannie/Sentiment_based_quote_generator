@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Quote of the Day</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Raleway">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link href='https://fonts.googleapis.com/css?family=Merienda+One' rel='stylesheet' type='text/css'>
+    <style>
+        body, h1, h2, h3, h4, h5, h6 {
+            font-family: "Raleway", Arial, Helvetica, sans-serif;
+        }
+        .Merienda_One {
+            font-family: "Merienda One";
+            font-size: 30px;
+            font-style: normal;
+            font-variant: normal;
+            font-weight: normal;
+            color: black; /* Adjusted color for better visibility */
+        }
+        div.quote {
+            padding: 20px;
+        }
+        #footer {
+            position: absolute;
+            bottom: 0;
+            width: 100%;
+            height: 6.5rem; /* Footer height */
+        }
+        .banner {
+            width: 100%;
+            height: auto;
+        }
+
+
+
+    </style>
+</head>
+<body style="background-color: #ffffff; margin: 0; padding: 0;">
+
+    <!-- Banner Image Section -->
+    <div style="width: 100%;height: 30vh; overflow: hidden;">
+        <img src="https://images.pexels.com/photos/573130/pexels-photo-573130.jpeg?cs=srgb&dl=pexels-zyuliansyah-573130.jpg&fm=jpg" alt="Banner" class="banner" />
+    </div>
+    
+    <div id="quote" class="quote">
+        <div class="Merienda_One">
+            {{ quote }}<br><br>
+            {{ author }}
+        </div>
+    </div>
+    
+    <footer class="w3-container w3-center" id="footer">
+        <h3>Choose your mood:</h3>
+        <div class="w3-container w3-center">
+            <form id="myform" action="{{ url_for('quote_me') }}" method="GET">
+                <button class="w3-button" type="submit" name="darker" id="darker" value="{{ current_id }}">
+                    <img src="https://i.pinimg.com/564x/da/8c/21/da8c2163061be58d770f6f9af78258e8.jpg" alt="Darker" style="width:50px; height:50px;" />
+                </button>
+                
+                <button class="w3-button" name="brighter" id="brighter" type="submit" value="{{ current_id }}">
+                    <img src="https://as1.ftcdn.net/v2/jpg/02/15/08/80/1000_F_215088044_Ow0pypSekAamu3jZJnkRtfAyKj6KVlKj.jpg" alt="Brighter" style="width:50px; height:50px;" />
+                </button>
+            </form>
+        </div>
+    </footer>
+    
+    <script>
+        function swipedetect(el, callback) {
+            var touchsurface = el,
+                swipedir,
+                startx,
+                starty,
+                distx,
+                disty,
+                threshold = 150, // Required min distance traveled to be considered swipe
+                restraint = 100, // Maximum distance allowed at the same time in perpendicular direction
+                allowedTime = 300, // Maximum time allowed to travel that distance
+                elapsedTime,
+                startTime,
+                handleswipe = callback || function(swipedir) {};
+
+            touchsurface.addEventListener('touchstart', function(e) {
+                var touchobj = e.changedTouches[0];
+                swipedir = 'none';
+                distx = 0;
+                disty = 0;
+                startx = touchobj.pageX;
+                starty = touchobj.pageY;
+                startTime = new Date().getTime(); // Record time when finger first makes contact with surface
+                e.preventDefault();
+            }, false);
+
+            touchsurface.addEventListener('touchmove', function(e) {
+                e.preventDefault(); // Prevent scrolling when inside DIV
+            }, false);
+
+            touchsurface.addEventListener('touchend', function(e) {
+                var touchobj = e.changedTouches[0];
+                distx = touchobj.pageX - startx; // Get horizontal dist traveled
+                disty = touchobj.pageY - starty; // Get vertical dist traveled
+                elapsedTime = new Date().getTime() - startTime; // Get time elapsed
+                // Check if swipe is long enough
+                if (elapsedTime <= allowedTime) {
+                    if (Math.abs(distx) >= threshold && Math.abs(disty) <= restraint) {
+                        swipedir = (distx < 0) ? 'left' : 'right'; // If dist traveled is negative, it indicates left swipe
+                    } else if (Math.abs(disty) >= threshold && Math.abs(distx) <= restraint) {
+                        swipedir = (disty < 0) ? 'up' : 'down'; // If dist traveled is negative, it indicates up swipe
+                    }
+                }
+                handleswipe(swipedir);
+                e.preventDefault();
+            }, false);
+        }
+
+        // USAGE:
+        var el = document.getElementById('quote');
+
+        swipedetect(el, function(swipedir) {
+            if (swipedir === 'right') {
+                document.getElementById('brighter').click();
+            } else if (swipedir === 'left') {
+                document.getElementById('darker').click();
+            }
+        });
+    </script>
+</body>
+</html>
